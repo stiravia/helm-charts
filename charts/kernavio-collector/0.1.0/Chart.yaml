@@ -1,0 +1,20 @@
+annotations:
+  org.opencontainers.image.source: https://github.com/stiravia/helm-charts
+apiVersion: v2
+appVersion: 0.1.0
+description: Watches a Kubernetes cluster and pushes changes to Kernavio over outbound
+  HTTPS.
+home: https://github.com/stiravia/helm-charts
+keywords:
+- kubernetes
+- inventory
+- kernavio
+kubeVersion: '>=1.25.0-0'
+maintainers:
+- name: Stiravia
+  url: https://github.com/stiravia
+name: kernavio-collector
+sources:
+- https://github.com/stiravia/helm-charts/tree/main/charts/kernavio-collector
+type: application
+version: 0.1.0

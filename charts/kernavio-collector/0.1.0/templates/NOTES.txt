@@ -1,0 +1,13 @@
+kernavio-collector is installed in namespace {{ .Release.Namespace }}{{ with .Values.cluster.id }} for cluster {{ . }}{{ end }}.
+
+It sends to {{ .Values.endpoint }}. Check it with:
+
+  kubectl -n {{ .Release.Namespace }} rollout status deployment/{{ include "collector.fullname" . }}
+  kubectl -n {{ .Release.Namespace }} logs deployment/{{ include "collector.fullname" . }}
+{{- if not .Values.existingSecret }}
+
+The API key is stored in the Secret {{ include "collector.fullname" . }}. Upgrades reuse it, so you don't need to pass
+it again:
+
+  helm upgrade {{ .Release.Name }} oci://ghcr.io/stiravia/helm-charts/kernavio-collector -n {{ .Release.Namespace }}
+{{- end }}
