@@ -1,0 +1,33 @@
+# The checkpoint ConfigMap. RBAC cannot restrict create by name, so create is granted on configmaps in this namespace
+# only; get and update are limited to the one ConfigMap.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "collector.fullname" . }}-state
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "collector.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: [configmaps]
+    verbs: [create]
+  - apiGroups: [""]
+    resources: [configmaps]
+    resourceNames: [kernavio-collector-state]
+    verbs: [get, update]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "collector.fullname" . }}-state
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "collector.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "collector.fullname" . }}-state
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "collector.fullname" . }}
+    namespace: {{ .Release.Namespace }}

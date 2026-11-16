@@ -1,0 +1,2 @@
+# Values chart-testing (ct) lints the chart with in stiravia/helm-charts. Not part of the package.
+apiKey: kv_col_ci
