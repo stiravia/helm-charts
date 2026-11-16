@@ -1,2 +1,2 @@
 # helm-charts
-public report for the helm charts owned by stiravia
+public repo for the helm charts owned by stiravia
