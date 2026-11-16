@@ -1,0 +1,28 @@
+# Lints every chart with chart-testing (helm lint with each ci/*-values.yaml, yamllint, Chart.yaml schema) on every
+# change. Charts are not installed here: they need Stiravia services to become ready.
+name: Lint charts
+
+on:
+  push:
+    branches: [main]
+    paths: ["charts/**", "ct.yaml", ".github/workflows/lint.yml"]
+  pull_request:
+    paths: ["charts/**", "ct.yaml", ".github/workflows/lint.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.x" # for chart-testing's yamllint and yamale
+      - uses: helm/chart-testing-action@720270857a28afd41e2426521a7801db09e9b510 # v2.9.0
+      - name: Lint
+        run: ct lint --config ct.yaml --all
