@@ -1,0 +1,39 @@
+apiVersion: v1
+entries:
+  kernavio-collector:
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
+          description: First release of the Kernavio collector chart
+      artifacthub.io/images: |
+        - name: kernavio-collector
+          image: ghcr.io/stiravia/images/kernavio-collector:0.1.0
+      artifacthub.io/links: |
+        - name: Chart files
+          url: https://github.com/stiravia/helm-charts/tree/main/charts/kernavio-collector
+        - name: Security
+          url: https://github.com/stiravia/helm-charts/blob/main/SECURITY.md
+      org.opencontainers.image.source: https://github.com/stiravia/helm-charts
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-11-16T11:50:54.655858577Z"
+    description: Watches a Kubernetes cluster and pushes changes to Kernavio over
+      outbound HTTPS.
+    digest: 2906cabaebf594786d084504cba36c878f0c11d7fe1d34f59ce846912d1c97b5
+    home: https://github.com/stiravia/helm-charts
+    keywords:
+    - kubernetes
+    - inventory
+    - kernavio
+    kubeVersion: '>=1.25.0-0'
+    maintainers:
+    - name: Stiravia
+      url: https://github.com/stiravia
+    name: kernavio-collector
+    sources:
+    - https://github.com/stiravia/helm-charts/tree/main/charts/kernavio-collector
+    type: application
+    urls:
+    - https://github.com/stiravia/helm-charts/releases/download/kernavio-collector-0.1.0/kernavio-collector-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-11-16T11:50:54.655865598Z"
