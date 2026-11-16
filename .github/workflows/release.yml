@@ -1,0 +1,60 @@
+# Releases every chart under charts/ whose version has no release yet:
+#   - a GitHub Release <chart>-<version> with the packaged chart (chart-releaser);
+#   - the Helm repository index on the gh-pages branch, served at https://stiravia.github.io/helm-charts;
+#   - oci://ghcr.io/stiravia/charts/<chart>:<version>, pushed with this repository's token so the package is linked
+#     to this repository.
+# Charts arrive on main from the private repository's publish workflow.
+name: Release charts
+
+on:
+  push:
+    branches: [main]
+    paths: ["charts/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # GitHub Releases and the gh-pages branch
+  packages: write # ghcr.io
+
+concurrency:
+  group: release-charts
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # chart-releaser compares with the latest release tag
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+
+      - name: Release
+        uses: helm/chart-releaser-action@92c6b97fa9f664492a2592e0d1d80bc6bf378957 # v1.9.0
+        with:
+          charts_dir: charts
+          skip_existing: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to ghcr.io
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          shopt -s nullglob
+          packages=(.cr-release-packages/*.tgz)
+          if [ ${#packages[@]} -eq 0 ]; then echo "nothing new to push"; exit 0; fi
+          echo "$GH_TOKEN" | helm registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          for pkg in "${packages[@]}"; do
+            name=$(helm show chart "$pkg" | awk '$1 == "name:" {print $2}')
+            version=$(helm show chart "$pkg" | awk '$1 == "version:" {gsub(/"/, "", $2); print $2}')
+            if helm show chart "oci://ghcr.io/stiravia/charts/$name" --version "$version" >/dev/null 2>&1; then
+              echo "$name $version is already on ghcr.io"
+              continue
+            fi
+            helm push "$pkg" oci://ghcr.io/stiravia/charts
+          done

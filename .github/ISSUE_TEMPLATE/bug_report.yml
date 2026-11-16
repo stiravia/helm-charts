@@ -1,0 +1,44 @@
+name: Bug report
+description: Something does not work as described in a chart's guide.
+labels: [bug]
+body:
+  - type: dropdown
+    id: chart
+    attributes:
+      label: Chart
+      options:
+        - kernavio-collector
+    validations:
+      required: true
+  - type: input
+    id: chart-version
+    attributes:
+      label: Chart version
+      description: "`helm list -A` shows it."
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Kubernetes and Helm versions
+      placeholder: "Kubernetes 1.31 (GKE), Helm 3.16"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: The helm command and the values you used. Remove API keys and other secrets.
+      render: shell
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and events
+      description: "For example `kubectl -n <namespace> logs deployment/<name>` and `kubectl -n <namespace> get events`. Remove secrets."
+      render: text

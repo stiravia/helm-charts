@@ -1,0 +1,8 @@
+# chart-testing (https://github.com/helm/chart-testing) configuration for .github/workflows/lint.yml.
+# Charts are linted with each values file in their ci/ folder.
+chart-dirs:
+  - charts
+target-branch: main
+# Charts arrive here from a private repository, which checks version bumps itself.
+check-version-increment: false
+validate-maintainers: false
